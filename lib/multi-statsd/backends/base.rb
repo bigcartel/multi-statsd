@@ -60,7 +60,7 @@ module MultiStatsd
       #   Multiple values - api:12|ms:15|ms:8|ms
       # @param [String] msg string of data in statsd format
       # @return [true]
-      def record(msg)
+      def write(msg)
         msg.each_line do |row|
           # Fetch our key and records
           key, *records = row.split(":")

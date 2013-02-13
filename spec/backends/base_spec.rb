@@ -115,11 +115,11 @@ describe MultiStatsd::Backend::Base do
     end
   end
   
-  describe "record" do
+  describe "write" do
     describe "crap" do
       it "should ignore garbage" do
-        backend.record "blah:123|foo"
-        backend.record "blah:snord|ms"
+        backend.write "blah:123|foo"
+        backend.write "blah:snord|ms"
         backend.counters.should be_empty
         backend.gauges.should be_empty
         backend.timers.should be_empty
@@ -129,21 +129,21 @@ describe MultiStatsd::Backend::Base do
     describe "timers" do
       describe "single" do
         let(:record) { "api:3|ms" }
-        before(:each) { backend.record record }
+        before(:each) { backend.write record }
 
         it "should record from scratch" do
           backend.timers.should == {'api' => [3]}
         end
 
         it "should append a time" do
-          backend.record "api:4|ms"
+          backend.write "api:4|ms"
           backend.timers.should == {'api' => [3, 4]}
         end
       end
 
       describe "multiple" do
         let(:record) { "api:3|ms:4|ms" }
-        before(:each) { backend.record record }
+        before(:each) { backend.write record }
 
         it "should record both values" do
           backend.timers.should == {'api' => [3,4]}
@@ -154,21 +154,21 @@ describe MultiStatsd::Backend::Base do
     describe "gauges" do
       describe "single" do
         let(:record) { "cpu:0.15|g" }
-        before(:each) { backend.record record }
+        before(:each) { backend.write record }
 
         it "should record from scratch" do
           backend.gauges.should == {'cpu' => 0.15}
         end
 
         it "should update existing gauge" do
-          backend.record "cpu:0.17|g"
+          backend.write "cpu:0.17|g"
           backend.gauges.should == {'cpu' => 0.17}
         end
       end
 
       describe "multiple" do
         let(:record) { "cpu:0.15|g:0.17|g" }
-        before(:each) { backend.record record }
+        before(:each) { backend.write record }
 
         it "should use the last value" do
           backend.gauges.should == {'cpu' => 0.17}
@@ -179,56 +179,56 @@ describe MultiStatsd::Backend::Base do
     describe "counters" do
       describe "single without sample rate" do
         let(:record) { "bytes:15.2|c" }
-        before(:each) { backend.record record }
+        before(:each) { backend.write record }
 
         it "should record from scratch" do
           backend.counters.should == {'bytes' => 15.2}
         end
 
         it "should add existing record" do
-          backend.record record
+          backend.write record
           backend.counters.should == {'bytes' => 30.4}
         end
       end
 
       describe "single with sample rate" do
         let(:record) { "bytes:15.2|c|@0.5" }
-        before(:each) { backend.record record }
+        before(:each) { backend.write record }
 
         it "should record from scratch" do
           backend.counters.should == {'bytes' => 30.4}
         end
 
         it "should add existing record" do
-          backend.record record
+          backend.write record
           backend.counters.should == {'bytes' => 60.8}
         end
       end
 
       describe "multiple without sample rate" do
         let(:record) { "bytes:15.5|c:20.2|c" }
-        before(:each) { backend.record record }
+        before(:each) { backend.write record }
 
         it "should record from scratch" do
           backend.counters.should == {'bytes' => 35.7}
         end
 
         it "should add existing record" do
-          backend.record record
+          backend.write record
           backend.counters.should == {'bytes' => 71.4}
         end
       end
 
       describe "multiple with sample rate" do
         let(:record) { "bytes:7.75|c|@0.5:10.1|c|@0.5" }
-        before(:each) { backend.record record }
+        before(:each) { backend.write record }
 
         it "should record from scratch" do
           backend.counters.should == {'bytes' => 35.7}
         end
 
         it "should add existing record" do
-          backend.record record
+          backend.write record
           backend.counters.should == {'bytes' => 71.4}
         end
       end

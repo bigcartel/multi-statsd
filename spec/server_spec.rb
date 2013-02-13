@@ -3,7 +3,7 @@ require File.expand_path('spec_helper.rb', File.dirname(__FILE__))
 require 'multi-statsd/backends/stdout'
 
 class MockBackend
-  def record(data); end
+  def write(data); end
 end
 
 describe MultiStatsd::Server do
@@ -16,7 +16,7 @@ describe MultiStatsd::Server do
   describe "recording data to backends" do
     it "Should record data to a single backend" do
       mock_backend = MockBackend.new
-      mock_backend.should_receive(:record).with(message)
+      mock_backend.should_receive(:write).with(message)
       EM.run do
         EM::open_datagram_socket 'localhost', 33333, MultiStatsd::Server, mock_backend
         send_message message
@@ -27,7 +27,7 @@ describe MultiStatsd::Server do
     it "should record data to multiple backends" do
       backends = 3.times.map do
         backend = MockBackend.new
-        backend.should_receive(:record).with(message)
+        backend.should_receive(:write).with(message)
         backend
       end
 

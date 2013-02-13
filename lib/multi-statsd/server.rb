@@ -13,7 +13,7 @@ module MultiStatsd
     # @return [nil]
     def receive_data(data)
       @backends.each do |backend|
-        backend.record(data)
+        backend.write(data)
       end
       
       nil

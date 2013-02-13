@@ -40,7 +40,7 @@ describe MultiStatsd::Backend::Hottie do
       before(:all) {
         @db = backend.instance_variable_get(:@db)
         @db.flushdb
-        backend.record "cpu:0.15|g"
+        backend.write "cpu:0.15|g"
         backend.flush
       }
       
@@ -69,7 +69,7 @@ describe MultiStatsd::Backend::Hottie do
       before(:all) {
         @db = backend.instance_variable_get(:@db)
         @db.flushdb
-        backend.record "bytes:1200|c"
+        backend.write "bytes:1200|c"
         backend.flush
       }
       
@@ -98,7 +98,7 @@ describe MultiStatsd::Backend::Hottie do
       before(:all) {
         @db = backend.instance_variable_get(:@db)
         @db.flushdb
-        backend.record "api:15.5|ms"
+        backend.write "api:15.5|ms"
         backend.flush
       }
       
