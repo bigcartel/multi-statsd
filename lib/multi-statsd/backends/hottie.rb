@@ -45,7 +45,7 @@ class MultiStatsd::Backend::Hottie < MultiStatsd::Backend::Base
           @db.hmset "timers:#{ts}", *(timers.map { |stat, data|
             timer_hash.clear
             data.each { |d| timer_hash[d.round] += 1 }
-            [stat, Marshal.dump(timer_hash.to_a)]
+            [stat, Marshal.dump(timer_hash)]
           })
           @db.expire "timers:#{ts}", @seconds_to_retain + 5 # Retain a few extra seconds to avoid reporting race
           @db.sadd "timers", timers.keys

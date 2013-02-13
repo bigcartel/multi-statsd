@@ -110,7 +110,7 @@ describe MultiStatsd::Backend::Hottie do
         samples = @db.lrange "timer_samples", 0, -1
         samples.size.should == 1
         @db.hlen(samples.first).should == 1
-        Marshal.load(@db.hget(samples.first, 'api')).should == [[16, 1]]
+        Marshal.load(@db.hget(samples.first, 'api')).should == {16 => 1}
       end
       
       it "should roll over on flush if there are too many samples" do
