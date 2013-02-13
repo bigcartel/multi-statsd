@@ -73,10 +73,11 @@ module MultiStatsd
             value, type, sample_rate = record.split('|')
             next unless value and type and value =~ /^(?:[\d\.-]+)$/
 
-            if type == "ms"
+            case type
+            when "ms"
               @timers[key] ||= []
               @timers[key].push(value.to_f)
-            elsif type == "c"
+            when "c"
               if sample_rate
                 sample_rate = sample_rate.gsub(/[^\d\.]/, '').to_f
                 sample_rate = 1 if sample_rate <= 0
@@ -84,7 +85,7 @@ module MultiStatsd
               else
                 @counters[key] += value.to_f
               end
-            elsif type == "g"
+            when "g"
               @gauges[key] = value.to_f
             end
           end
