@@ -1,4 +1,4 @@
-# MultiStatsd [![Build Status](https://travis-ci.org/bigcartel/multi-statsd.png)](https://travis-ci.org/bigcartel/multi-statsd) [![Code Climate](https://codeclimate.com/github/bigcartel/multi-statsd.png)](https://codeclimate.com/github/bigcartel/multi-statsd)
+# MultiStatsd [![Build Status](https://travis-ci.org/bigcartel/multi-statsd.png?branch=master)](https://travis-ci.org/bigcartel/multi-statsd) [![Code Climate](https://codeclimate.com/github/bigcartel/multi-statsd.png)](https://codeclimate.com/github/bigcartel/multi-statsd)
 
 An eventmachine-based statsd server written in ruby with a modular backend system.
 The motivation behind creating Yet Another Statsd Server was that while the existing ones allowed
