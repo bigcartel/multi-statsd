@@ -1,0 +1,17 @@
+# Host and port to listen on
+host: 127.0.0.1
+port: 8125
+verbosity: 1 # 0-4, 0 being the most verbose
+# logfile: /var/log/multi-statsd.log
+# pidfile: /var/run/multi-statsd.pid
+# daemonize: false
+backends:
+  stdout_every_3:
+    backend: Stdout
+    flush_interval: 3
+  hottie:
+    backend: Hottie
+    host: 127.0.0.1
+    port: 6379
+    flush_interval: 1
+    seconds_to_retain: 60

@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
+require 'yaml'
+require 'optparse'
+
+options = {}
+
+parser = OptionParser.new do |opts|
+  opts.banner = "Usage: multi-statsd -c CONFIG_FILE"
+
+  opts.separator ""
+  opts.separator "Options:"
+
+  opts.on("-c CONFIG_FILE", "--config-file CONFIG_FILE", "Configuration file") do |config_file|
+    options = YAML.load_file(config_file).merge(options)
+  end
+
+  opts.on("-d", "--debug", "Shortcut for (daemonize: false, verbosity: 0, log: stdout)") do
+    options['daemonize'] = false
+    options['verbosity'] = 0
+    options['logfile'] = nil
+  end
+
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+
+end
+
+parser.parse!
+
+raise OptionParser::MissingArgument, "A config file must be specified" if options.empty?
+raise "At least one backend must be specified" if !options.has_key?('backends') or options['backends'].empty?
+
+require 'multi-statsd'
+
+Signal.trap("INT") { MultiStatsd.stop }
+Signal.trap("TERM") { MultiStatsd.stop }
+
+log = options['logfile'] ? Logger.new(options['logfile']) : Logger.new(STDOUT)
+log.level = options['verbosity'] || 2
+MultiStatsd.logger = log
+
+# Daemonize if requested
+Process.daemon if options['daemonize']
+
+# Write pidfile if requested
+if options['pidfile']
+  begin
+    File.open(options['pidfile'], File::WRONLY | File::APPEND | File::CREAT) { |fp| fp.write Process.pid }
+  rescue
+    log.error "Unable to write pid file: #{$!.to_s}"
+  end
+end
+
+MultiStatsd.start(options).join
