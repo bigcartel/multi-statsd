@@ -9,9 +9,9 @@ backends:
   stdout_every_3:
     backend: Stdout
     flush_interval: 3
-  hottie:
-    backend: Hottie
-    host: 127.0.0.1
-    port: 6379
-    flush_interval: 1
-    seconds_to_retain: 60
+#  hottie:
+#    backend: Hottie
+#    host: 127.0.0.1
+#    port: 6379
+#    flush_interval: 1
+#    seconds_to_retain: 60
